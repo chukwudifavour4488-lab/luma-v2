@@ -1,0 +1,13 @@
+export default function MessageBubble({ role, content }) {
+  return (
+    <div className={`flex ${role === 'user'? 'justify-end' : 'justify-start'}`}>
+      <div className={`max-w-2xl p-5 rounded-2xl ${
+        role === 'user'
+       ? 'bg-gradient-to-br from-black to-gray-800 text-white shadow-md'
+        : 'bg-white border-gray-200 shadow-sm'
+      }`}>
+        <p className="leading-relaxed whitespace-pre-wrap">{content}</p>
+      </div>
+    </div>
+  )
+}
