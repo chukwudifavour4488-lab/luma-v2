@@ -1,0 +1,18 @@
+import Header from './components/Header'
+import Sidebar from './components/Sidebar'
+import ChatArea from './components/ChatArea'
+import { useChat } from './hooks/useChat'
+
+export default function App() {
+  const { messages, loading, sendMessage } = useChat()
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 text-gray-900">
+      <Header />
+      <div className="flex max-w-7xl mx-auto">
+        <Sidebar />
+        <ChatArea messages={messages} loading={loading} onSend={sendMessage} />
+      </div>
+    </div>
+  )
+}
