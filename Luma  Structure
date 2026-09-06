@@ -1,0 +1,16 @@
+luma-v2/
+├── src/
+│ ├── components/
+│ │ ├── Sidebar.jsx
+│ │ ├── ChatArea.jsx
+│ │ ├── MessageBubble.jsx
+│ │ └── Header.jsx
+│ ├── lib/
+│ │ └── LumaBrain.js
+│ ├── hooks/
+│ │ └── useChat.js
+│ ├── App.jsx
+│ ├── main.jsx
+│ └── index.css
+├──.env
+└── package.json
