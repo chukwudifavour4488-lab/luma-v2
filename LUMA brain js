@@ -1,4 +1,41 @@
 import OpenAI from 'openai'
+import { createClient } from '@supabase/supabase-js'
+
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_KEY,
+  dangerouslyAllowBrowser: true
+})
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_KEY
+)
+
+export async function talkToLuma(messages) {
+  // Save what user said
+  const lastUserMsg = messages.filter(m => m.role === 'user').pop()
+  if(lastUserMsg) {
+    await supabase.from('memories').insert({ content: lastUserMsg.content })
+  }
+
+  // Get past memories
+  const { data: memories } = await supabase.from('memories').select('content').limit(10)
+  const memoryText = memories?.map(m => m.content).join('\n') || 'No memories yet'
+
+  const systemPrompt = {
+    role: 'system',
+    content: `You are LUMA. A ruthless CEO coach. 
+    USER MEMORIES: ${memoryText}
+    Use memories to hold them accountable. Be direct. No fluff.`
+  }
+
+  const res = await openai.chat.completions.create({
+    model: "gpt-4o",
+    messages: [systemPrompt,...messages]
+  })
+  return res.choices[0].message.content
+}
+import OpenAI from 'openai'
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_KEY,
