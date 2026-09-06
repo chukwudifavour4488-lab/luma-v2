@@ -1,0 +1,33 @@
+export default function App() {
+  return (
+    <div className="min-h-screen bg-white text-black font-sans">
+      {/* HEADER */}
+      <header className="border-b border-gray-200 p-4 flex justify-between">
+        <h1 className="text-2xl font-bold">LUMA</h1>
+        <button className="px-4 py-2 border border-black rounded-lg">Dark</button>
+      </header>
+
+      {/* MAIN LAYOUT */}
+      <div className="flex">
+        {/* SIDEBAR */}
+        <aside className="w-64 border-r border-gray-200 h-[calc(100vh-65px)] p-4">
+          <button className="w-full text-left p-3 hover:bg-gray-100 rounded-lg">Chat</button>
+          <button className="w-full text-left p-3 hover:bg-gray-100 rounded-lg">Missions</button>
+          <button className="w-full text-left p-3 hover:bg-gray-100 rounded-lg">Goals</button>
+          <button className="w-full text-left p-3 hover:bg-gray-100 rounded-lg">Proof</button>
+        </aside>
+
+        {/* CHAT AREA */}
+        <main className="flex-1 p-8">
+          <h2 className="text-4xl font-bold">What are we shipping today?</h2>
+          <p className="text-gray-500 mt-2">LUMA is your CEO. No excuses. Just execution.</p>
+          
+          <input 
+            className="w-full mt-8 p-4 border-gray-300 rounded-xl" 
+            placeholder="Talk to LUMA..." 
+          />
+        </main>
+      </div>
+    </div>
+  )
+}
