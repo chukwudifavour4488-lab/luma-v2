@@ -1,44 +1,116 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import useStore from './store';
-import Nav from './components/Nav';
-import Today from './pages/Today';
-import MissionActive from './pages/MissionActive';
-import ProofUpload from './pages/ProofUpload';
-import Portfolio from './pages/Portfolio';
-import Settings from './pages/Settings';
-import Circles from './components/Circles';
-import Opportunities from './components/Opportunities';
-import SkillTree from './components/SkillTree';
-import Leaderboard from './components/Leaderboard';
-import Analytics from './components/Analytics';
+import { useState } from 'react'
+import { talkToLuma } from './LumaBrain'
 
-function App() {
-  const { setUser } = useStore();
+export default function App() {
+  const [messages, setMessages] = useState([
+    {role: 'assistant', content: "LUMA here. CEO mode activated. What are we shipping today?"}
+  ])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSetUser = (user) => setUser(user);
+  async function sendMessage() {
+    if(!input) return
+    const userMsg = {role: 'user', content: input}
+    const newMessages = [...messages, userMsg]
+    setMessages(newMessages)
+    setInput('')
+    setLoading(true)
+    
+    const res = await talkToLuma(newMessages)
+    setMessages([...newMessages, {role: 'assistant', content: res}])
+    setLoading(false)
+  }
 
   return (
-    <Router>
-      <div className="min-h-screen bg-black text-white max-w-md mx-auto relative">
-        <Routes>
-          <Route path="/" element={<Navigate to="/today" replace />} />
-          <Route path="/today" element={<Today />} />
-          <Route path="/missions" element={<div className="p-5 pt-6 pb-24"><h1 className="text-3xl font-bold mb-4">MISSIONS</h1><p className="text-gray-400">Loading...</p></div>} />
-          <Route path="/mission-active" element={<MissionActive />} />
-          <Route path="/proof-upload" element={<ProofUpload />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/circles" element={<Circles />} />
-          <Route path="/opportunities" element={<Opportunities />} />
-          <Route path="/skills" element={<SkillTree />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/achievements" element={<div className="p-5 pt-6 pb-24"><h1 className="text-3xl font-bold mb-4">ACHIEVEMENTS</h1><p className="text-gray-400">Coming soon...</p></div>} />
-          <Route path="/settings" element={<Settings />} />
-        </Routes>
-        <Nav />
+    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 text-gray-900">
+      {/* GLASS HEADER */}
+      <header className="backdrop-blur-xl bg-white/70 border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-black to-gray-700 flex items-center justify-center text-white font-bold text-xl">
+              L
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight">LUMA</h1>
+          </div>
+          <div className="text-sm text-gray-500">AI House v2</div>
+        </div>
+      </header>
+
+      <div className="flex max-w-7xl mx-auto">
+        {/* PREMIUM SIDEBAR */}
+        <aside className="w-72 p-6 hidden lg:block">
+          <div className="backdrop-blur-xl bg-white/60 border-gray-200 rounded-2xl p-4 shadow-sm">
+            <NavItem icon="💬" label="Chat" active />
+            <NavItem icon="🎯" label="Missions" />
+            <NavItem icon="📊" label="Goals" />
+            <NavItem icon="📸" label="Proof" />
+            <NavItem icon="⚙️" label="Settings" />
+          </div>
+          
+          <div className="mt-6 p-4 rounded-2xl bg-gradient-to-br from-black to-gray-800 text-white">
+            <p className="text-sm font-semibold mb-1">CEO Mode</p>
+            <p className="text-xs text-gray-300">No excuses. Just execution.</p>
+          </div>
+        </aside>
+
+        {/* CHAT AREA */}
+        <main className="flex-1 p-6">
+          <div className="backdrop-blur-xl bg-white/60 border-gray-200 rounded-3xl shadow-lg h-[calc(100vh-140px)] flex flex-col">
+            
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+              {messages.map((m,i) => (
+                <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-2xl p-5 rounded-2xl ${
+                    m.role === 'user' 
+                    ? 'bg-gradient-to-br from-black to-gray-800 text-white shadow-md' 
+                    : 'bg-white border border-gray-200 shadow-sm'
+                  }`}>
+                    <p className="leading-relaxed whitespace-pre-wrap">{m.content}</p>
+                  </div>
+                </div>
+              ))}
+              {loading && (
+                <div className="flex gap-2">
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
+                </div>
+              )}
+            </div>
+            
+            {/* INPUT */}
+            <div className="p-6 border-t border-gray-200">
+              <div className="flex gap-3">
+                <input 
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && sendMessage()}
+                  className="flex-1 p-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black transition" 
+                  placeholder="Tell LUMA what you're building..." 
+                />
+                <button 
+                  onClick={sendMessage} 
+                  className="px-8 py-4 bg-gradient-to-br from-black to-gray-800 text-white rounded-2xl font-bold hover:scale-105 transition shadow-lg"
+                >
+                  Send →
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
-    </Router>
-  );
+    </div>
+  )
 }
 
-export default App;
+function NavItem({icon, label, active}) {
+  return (
+    <button className={`w-full text-left p-3 rounded-xl mb-1 flex items-center gap-3 transition ${
+      active ? 'bg-black text-white' : 'hover:bg-gray-100'
+    }`}>
+      <span>{icon}</span>
+      <span className="font-medium">{label}</span>
+    </button>
+  )
+    }
