@@ -1,0 +1,38 @@
+import { useState } from 'react'
+import MessageBubble from './MessageBubble'
+
+export default function ChatArea({ messages, loading, onSend }) {
+  const [input, setInput] = useState('')
+
+  function handleSend() {
+    onSend(input)
+    setInput('')
+  }
+
+  return (
+    <main className="flex-1 p-6">
+      <div className="backdrop-blur-xl bg-white/60 border-gray-200 rounded-3xl shadow-lg h-[calc(100vh-140px)] flex-col">
+
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {messages.map((m,i) => <MessageBubble key={i} {...m} />)}
+          {loading && <div className="text-gray-500">LUMA is thinking...</div>}
+        </div>
+
+        <div className="p-6 border-t border-gray-200">
+          <div className="flex gap-3">
+            <input
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleSend()}
+              className="flex-1 p-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black"
+              placeholder="Tell LUMA what you're building..."
+            />
+            <button onClick={handleSend} className="px-8 py-4 bg-gradient-to-br from-black to-gray-800 text-white rounded-2xl font-bold hover:scale-105 transition shadow-lg">
+              Send →
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  )
+}
