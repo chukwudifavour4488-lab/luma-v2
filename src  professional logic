@@ -1,0 +1,23 @@
+import { useState } from 'react'
+import { talkToLuma } from '../lib/LumaBrain'
+
+export function useChat() {
+  const [messages, setMessages] = useState([
+    {role: 'assistant', content: "LUMA here. CEO mode activated. What are we shipping today?"}
+  ])
+  const [loading, setLoading] = useState(false)
+
+  async function sendMessage(input) {
+    if(!input) return
+    const userMsg = {role: 'user', content: input}
+    const newMessages = [...messages, userMsg]
+    setMessages(newMessages)
+    setLoading(true)
+
+    const res = await talkToLuma(newMessages)
+    setMessages([...newMessages, {role: 'assistant', content: res}])
+    setLoading(false)
+  }
+
+  return { messages, loading, sendMessage }
+}
