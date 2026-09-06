@@ -1,3 +1,71 @@
+import { useState } from 'react'
+import { talkToLuma } from './LumaBrain'
+
+export default function App() {
+  const [messages, setMessages] = useState([{role: 'assistant', content: "LUMA here. What are we shipping today?"}])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  async function sendMessage() {
+    if(!input) return
+    const userMsg = {role: 'user', content: input}
+    setMessages([...messages, userMsg])
+    setInput('')
+    setLoading(true)
+    
+    const res = await talkToLuma([...messages, userMsg])
+    setMessages([...messages, userMsg, {role: 'assistant', content: res}])
+    setLoading(false)
+  }
+
+  return (
+    <div className="min-h-screen bg-white text-black font-sans">
+      {/* HEADER */}
+      <header className="border-b border-gray-200 p-4 flex justify-between items-center">
+        <h1 className="text-2xl font-bold">LUMA</h1>
+        <span className="text-sm text-gray-500">AI House v2</span>
+      </header>
+
+      <div className="flex h-[calc(100vh-65px)]">
+        {/* SIDEBAR */}
+        <aside className="w-64 border-r border-gray-200 p-4">
+          <button className="w-full text-left p-3 bg-gray-100 rounded-lg mb-2 font-semibold">Chat</button>
+          <button className="w-full text-left p-3 hover:bg-gray-100 rounded-lg">Missions</button>
+          <button className="w-full text-left p-3 hover:bg-gray-100 rounded-lg">Goals</button>
+          <button className="w-full text-left p-3 hover:bg-gray-100 rounded-lg">Proof</button>
+        </aside>
+
+        {/* CHAT AREA */}
+        <main className="flex-1 flex-col p-6">
+          <div className="flex-1 overflow-y-auto space-y-4">
+            {messages.map((m,i) => (
+              <div key={i} className={m.role === 'user' ? 'text-right' : 'text-left'}>
+                <div className={`inline-block p-4 rounded-2xl ${m.role === 'user' ? 'bg-black text-white' : 'bg-gray-100'}`}>
+                  {m.content}
+                </div>
+              </div>
+            ))}
+            {loading && <div className="text-gray-500">LUMA is thinking...</div>}
+          </div>
+          
+          <div className="flex gap-2 mt-4">
+            <input 
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && sendMessage()}
+              className="flex-1 p-4 border-gray-300 rounded-xl focus:outline-none" 
+              placeholder="Talk to LUMA..." 
+            />
+            <button onClick={sendMessage} className="px-6 py-4 bg-black text-white rounded-xl font-bold">
+              Send
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <div className="min-h-screen bg-white text-black font-sans">
