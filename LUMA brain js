@@ -1,3 +1,48 @@
+import OpenAI from 'openai'
+
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_KEY,
+  dangerouslyAllowBrowser: true // for Codespaces demo
+})
+
+export async function talkToLuma(messages) {
+  const systemPrompt = {
+    role: 'system', 
+    content: `You are LUMA. A ruthless but loving CEO coach. 
+    You are like ChatGPT + Meta AI combined. 
+    Be direct. No fluff. Push the user to execute. 
+    Remember everything. Help them ship.`
+  }
+  
+  const res = await openai.chat.completions.create({
+    model: "gpt-4o", // gpt-5 when you get access
+    messages: [systemPrompt, ...messages]
+  })
+  return res.choices[0].message.content
+}
+
+import OpenAI from 'openai'
+
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_KEY,
+  dangerouslyAllowBrowser: true // for Codespaces demo
+})
+
+export async function talkToLuma(messages) {
+  const systemPrompt = {
+    role: 'system', 
+    content: `You are LUMA. A ruthless but loving CEO coach. 
+    You are like ChatGPT + Meta AI combined. 
+    Be direct. No fluff. Push the user to execute. 
+    Remember everything. Help them ship.`
+  }
+  
+  const res = await openai.chat.completions.create({
+    model: "gpt-4o", // gpt-5 when you get access
+    messages: [systemPrompt, ...messages]
+  })
+  return res.choices[0].message.content
+}
 export async function talkToLuma(message) {
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
