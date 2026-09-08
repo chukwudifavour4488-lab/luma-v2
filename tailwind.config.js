@@ -1,1 +1,0 @@
-module.exports = { content: ['./public/index.html', './src/**/*.{js,jsx,ts,tsx}'], theme: { extend: { colors: { 'luma-purple': '#6A0DAD', 'luma-pink': '#FF00FF' }, fontFamily: { sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'] } } }, plugins: [] };
