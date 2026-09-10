@@ -1,0 +1,14 @@
+{
+  "name": "luma-v2",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "vite preview --host 0.0.0.0 --port $PORT"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "firebase": "^10.0.0",
+    "lucide-react": "^0.300.0",
+    "pdfjs-dist": "^3.11.174"
+  }
+}
